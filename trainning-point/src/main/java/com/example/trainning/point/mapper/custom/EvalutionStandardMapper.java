@@ -5,7 +5,9 @@ import com.example.trainning.point.dto.request.evalution.standard.EvalutionStand
 import com.example.trainning.point.dto.response.evalution.category.EvalutionCategoryResponse;
 import com.example.trainning.point.dto.response.evalution.person.EvalutionPersonResponse;
 import com.example.trainning.point.dto.response.evalution.person.EvalutionResponse;
+import com.example.trainning.point.dto.response.evalution.standard.EvalutionStandardDetailResponse;
 import com.example.trainning.point.dto.response.evalution.standard.EvalutionStandardResponse;
+import com.example.trainning.point.entity.EvaluationStandardDetail;
 import com.example.trainning.point.entity.EvalutionCategory;
 import com.example.trainning.point.entity.EvalutionPerson;
 import com.example.trainning.point.entity.EvalutionStandard;
@@ -31,6 +33,7 @@ public class EvalutionStandardMapper {
     IEvalutionCategoryRepository evalutionCategoryRepository;
     EvalutionPersonMapper evalutionPersonMapper;
     IEvalutionPersonRepository evalutionPersonRepository;
+    EvaluationStandardDetailMapper evaluationStandardDetailMapper;
 
     public EvalutionStandard convertToEntity(EvalutionStandardRequest request) {
         EvalutionCategory category = evalutionCategoryRepository
@@ -87,6 +90,14 @@ public class EvalutionStandardMapper {
             }
         }
 
+        List<EvalutionStandardDetailResponse> evaluationStandardDetails = new ArrayList<>();
+        if(entity.getEvalutionStandardDetailList() != null){
+            for(var it: entity.getEvalutionStandardDetailList()){
+                EvalutionStandardDetailResponse response = evaluationStandardDetailMapper.convertToEsResponse(it);
+                evaluationStandardDetails.add(response);
+            }
+        }
+
         return EvalutionStandardResponse.builder()
                 .id(entity.getId())
                 .name(entity.getName())
@@ -95,6 +106,7 @@ public class EvalutionStandardMapper {
                 .evalutionCategoryId(entity.getEvalutionCategory().getId())
                 .evalutionPerson(evalutionPersonMapper.convertToResponse(evalutionPerson))
                 .evalutionCategoryName(entity.getEvalutionCategory().getName())
+                .standardDetails(evaluationStandardDetails)
                 .build();
     }
 

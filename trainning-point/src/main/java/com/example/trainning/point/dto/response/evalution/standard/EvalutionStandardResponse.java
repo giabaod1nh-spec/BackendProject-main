@@ -19,5 +19,7 @@ public class EvalutionStandardResponse {
     Double maxPoint;
     Long evalutionCategoryId;
     String evalutionCategoryName;
-    private EvalutionPersonResponse evalutionPerson;
+    List<EvalutionStandardDetailResponse> standardDetails;
+    EvalutionPersonResponse evalutionPerson;
+
 }
