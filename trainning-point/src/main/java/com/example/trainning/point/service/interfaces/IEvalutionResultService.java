@@ -39,7 +39,8 @@ public interface IEvalutionResultService {
     Long countBelowAveragePerClass(Long semesterId , Long classId);
     Long countPoorPerClass(Long semesterId , Long classId);
 
-
+    //Manage statistic for advisor , student_leader
+    //List<EvalutionResultResponse> getResultPerClassSemester (Long classId , Long semesterId);
     EvalutionResult findBySemesterAndUser(Long idSemester, String userId);
     EvalutionResult findByUser(String userId);
 }

@@ -23,5 +23,8 @@ public interface IEvalutionPersonService {
     void teacherMark(EvalutionPersonRequest request, Long id);
 
     Double getMarkOfSemester(Long idSemester, String idUser);
+    Double getMarkOfStudentPerCategory(Long semesterId , String userId , Long evCategoryId);
+    Double getMarkOfMonitorPerCategory(Long semesterId , String userId , Long evCategoryId);
+    Double getMarkOfTeacherPerCategory(Long semesterId , String userId , Long evCategoryId);
     String getRateOfSemester(Long idSemester, String idUser);
 }

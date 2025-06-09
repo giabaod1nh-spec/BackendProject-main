@@ -23,4 +23,9 @@ public class StudentResponse {
     String gender;
     String email;
     String phone;
+    //Them vao cac truong
+    String email2;
+    String ethnic;
+    String address;
+    String facultyName;
 }

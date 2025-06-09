@@ -17,6 +17,8 @@ public class UserUpdateInfoResponse {
     String fullName;
     LocalDate dob;
     String email;
+    String email2;
+    String address;
     String phone;
     String gender;
     String className;

@@ -2,6 +2,7 @@ package com.example.trainning.point.service.impl;
 
 import com.example.trainning.point.configuration.LockMarkConfig;
 import com.example.trainning.point.dto.request.evalution.category.EvalutionCategoryRequest;
+import com.example.trainning.point.dto.request.evalution.person.EvaluationPersonCategoryRequest;
 import com.example.trainning.point.dto.request.evalution.person.EvalutionPersonRequest;
 import com.example.trainning.point.dto.request.evalution.person.MarkRequest;
 import com.example.trainning.point.dto.request.evalution.result.EvalutionResultRequest;
@@ -13,10 +14,7 @@ import com.example.trainning.point.exception.AppException;
 import com.example.trainning.point.exception.ErrorCode;
 import com.example.trainning.point.mapper.custom.EvalutionCategoryMapper;
 import com.example.trainning.point.mapper.custom.EvalutionPersonMapper;
-import com.example.trainning.point.repository.IEvaluationTimeRepository;
-import com.example.trainning.point.repository.IEvalutionCategoryRepository;
-import com.example.trainning.point.repository.IEvalutionPersonRepository;
-import com.example.trainning.point.repository.IEvalutionResultRepository;
+import com.example.trainning.point.repository.*;
 import com.example.trainning.point.service.interfaces.IEvalutionCategoryService;
 import com.example.trainning.point.service.interfaces.IEvalutionPersonService;
 import com.example.trainning.point.service.interfaces.IEvalutionResultService;
@@ -44,7 +42,9 @@ public class EvalutionPersonService implements IEvalutionPersonService {
     LockMarkConfig lockMarkConfig;
     SemesterService semesterService;
     IEvaluationTimeRepository evaluationTimeRepository;
-
+    IEvalutionStandardRepository evalutionStandardRepository;
+    IEvaluationPersonCategoryRepository evaluationPersonCategoryRepository;
+    EvaluationPersonCategoryService evaluationPersonCategoryService;
 
     @Override
     public EvalutionPerson findEntityById(Long id) {
@@ -74,10 +74,6 @@ public class EvalutionPersonService implements IEvalutionPersonService {
         EvalutionResult evalutionResult = evalutionResultRepository.findBySemesterIdAndUserId(activeSemester.getId(), request.getUserId());
 
 
-        //EvalutionResult evalutionResult = evalutionResultRepository
-        //      .findByUser(entity.getUser().getUserId());
-
-
         if (evalutionResult == null) {
             log.error("Khong tim thay");
 //            System.out.println(entity.getSemester().getId() + ". " + entity.getUser().getUserId());
@@ -86,6 +82,22 @@ public class EvalutionPersonService implements IEvalutionPersonService {
                     .semesterId(activeSemester.getId())
                     .build();
             evalutionResultService.create(resultRequest, request.getUserId());
+        }
+
+        //Bat dau tao EvaluationPersonCategory
+        EvalutionStandard standard = evalutionStandardRepository
+                .findById(request.getEvalutionStandardId()).orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND));
+
+        EvaluationPersonCategory evCategory = evaluationPersonCategoryRepository.findBySemesterIdAndUserIdAndEvCateId(activeSemester.getId(), request.getUserId(), standard.getEvalutionCategory().getId());
+
+        if (evCategory == null) {
+            log.error("Khong tim thay");
+//
+            EvaluationPersonCategoryRequest categoryRequest = EvaluationPersonCategoryRequest.builder()
+                    .evCategoryId(standard.getEvalutionCategory().getId())
+                    .semesterId(activeSemester.getId())
+                    .build();
+            evaluationPersonCategoryService.create(categoryRequest, request.getUserId());
         }
 
         return evalutionPersonMapper.convertToResponse(evalutionPersonRepository.save(entity));
@@ -156,7 +168,18 @@ public class EvalutionPersonService implements IEvalutionPersonService {
 
             entity.setStudentScore(request.getStudentScore());
             evalutionPersonRepository.save(entity);
-            log.error("student maerrk ok");
+
+            EvaluationPersonCategory evaluationPersonCategory = evaluationPersonCategoryService.findByUserAndSemesterAndEvCategory(entity.getUser().getUserId() , entity.getSemester().getId() , entity.getEvalutionStandard().getEvalutionCategory().getId());
+
+            if(evaluationPersonCategory != null){
+                evaluationPersonCategory.setStudentCateScore(this.getMarkOfStudentPerCategory(entity.getSemester().getId() , entity.getUser().getUserId() , entity.getEvalutionStandard().getEvalutionCategory().getId()));
+            }
+
+            assert evaluationPersonCategory != null;
+            evaluationPersonCategoryRepository.save(evaluationPersonCategory);
+
+
+            log.error("student mark ok");
 
             try {
                 Thread.sleep(1000L);
@@ -220,9 +243,18 @@ public class EvalutionPersonService implements IEvalutionPersonService {
 
             log.error("Cap nhat binh thuong");
             entity.setMonitorScore(request.getMonitorScore());
-
 //            log.error(entity);
             evalutionPersonRepository.save(entity);
+
+            EvaluationPersonCategory evaluationPersonCategory = evaluationPersonCategoryService.findByUserAndSemesterAndEvCategory(entity.getUser().getUserId() , entity.getSemester().getId() , entity.getEvalutionStandard().getEvalutionCategory().getId());
+
+            if(evaluationPersonCategory != null){
+                evaluationPersonCategory.setMonitorCateScore(this.getMarkOfMonitorPerCategory(entity.getSemester().getId() , entity.getUser().getUserId() , entity.getEvalutionStandard().getEvalutionCategory().getId()));
+            }
+            assert evaluationPersonCategory != null;
+            evaluationPersonCategoryRepository.save(evaluationPersonCategory);
+
+
         } catch (Exception e) {
 
         }
@@ -273,6 +305,16 @@ public class EvalutionPersonService implements IEvalutionPersonService {
                 evalutionResult.setCounselorFeedBack(request.getCounselorFeedBack());
                 evalutionResultRepository.save(evalutionResult);
             }
+
+
+            EvaluationPersonCategory evaluationPersonCategory = evaluationPersonCategoryService.findByUserAndSemesterAndEvCategory(entity.getUser().getUserId() , entity.getSemester().getId() , entity.getEvalutionStandard().getEvalutionCategory().getId());
+
+            if(evaluationPersonCategory != null){
+                evaluationPersonCategory.setTeacherCateScore(this.getMarkOfTeacherPerCategory(entity.getSemester().getId() , entity.getUser().getUserId() , entity.getEvalutionStandard().getEvalutionCategory().getId()));
+            }
+
+            assert evaluationPersonCategory != null;
+            evaluationPersonCategoryRepository.save(evaluationPersonCategory);
         } catch (Exception e) {
 
         }
@@ -289,6 +331,40 @@ public class EvalutionPersonService implements IEvalutionPersonService {
                 res += it.getTeacherScore();
         return res;
     }
+
+    @Override
+    public Double getMarkOfStudentPerCategory(Long semesterId, String userId, Long evCategoryId) {
+        List<EvalutionPerson> evalutionPersonList = evalutionPersonRepository.findBySemesterIdAndUserUserIdAndCategoryId(semesterId, userId, evCategoryId);
+        log.error("test" , evalutionPersonList);
+        Double res = 0.0;
+        for (var it : evalutionPersonList)
+            if (it != null && it.getStudentScore() != null)
+                res += it.getStudentScore();
+        return res;
+    }
+
+    @Override
+    public Double getMarkOfMonitorPerCategory(Long semesterId, String userId, Long evCategoryId) {
+        List<EvalutionPerson> evalutionPersonList = evalutionPersonRepository.findBySemesterIdAndUserUserIdAndCategoryId(semesterId, userId, evCategoryId);
+        log.error("test" , evalutionPersonList);
+        Double res = 0.0;
+        for (var it : evalutionPersonList)
+            if (it != null && it.getMonitorScore() != null)
+                res += it.getStudentScore();
+        return res;
+    }
+
+    @Override
+    public Double getMarkOfTeacherPerCategory(Long semesterId, String userId, Long evCategoryId) {
+        List<EvalutionPerson> evalutionPersonList = evalutionPersonRepository.findBySemesterIdAndUserUserIdAndCategoryId(semesterId, userId, evCategoryId);
+        log.error("test" , evalutionPersonList);
+        Double res = 0.0;
+        for (var it : evalutionPersonList)
+            if (it != null && it.getTeacherScore() != null)
+                res += it.getStudentScore();
+        return res;
+    }
+
 
     @Override
     public String getRateOfSemester(Long idSemester, String idUser) {

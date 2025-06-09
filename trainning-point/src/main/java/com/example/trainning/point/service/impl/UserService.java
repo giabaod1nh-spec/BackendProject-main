@@ -207,9 +207,9 @@ public class UserService implements IUserService {
     public UserUpdateInfoResponse updateUserInfo(String userId, UserUpdateInfoRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() ->  new RuntimeException("User not found"));
 
-        user.setDob(request.getDob());
+        user.setEmail2(request.getEmail2());
         user.setPhone(request.getPhone());
-        user.setGender(request.getGender());
+        user.setAddress(request.getAddress());
 
         return userMapperCustom.convertToInfoResponse(userRepository.save(user));
     }

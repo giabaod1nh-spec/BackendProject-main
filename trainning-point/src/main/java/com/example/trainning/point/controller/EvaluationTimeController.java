@@ -2,6 +2,7 @@ package com.example.trainning.point.controller;
 
 import com.example.trainning.point.dto.request.ApiResponse;
 import com.example.trainning.point.dto.request.evalution.time.EvaluationTimeRequest;
+import com.example.trainning.point.dto.request.evalution.time.EvaluationTimeUpdateRequest;
 import com.example.trainning.point.dto.response.evalution.time.EvaluationTimeResponse;
 import com.example.trainning.point.service.impl.EvaluationTimeService;
 import lombok.AccessLevel;
@@ -22,6 +23,13 @@ public class EvaluationTimeController {
     ApiResponse<EvaluationTimeResponse> createPeriodToTakeGrade(@RequestBody EvaluationTimeRequest request){
         return ApiResponse.<EvaluationTimeResponse>builder()
                 .result(evaluationTimeService.create(request))
+                .build();
+    }
+
+    @PatchMapping("/update/{evaCategoryId}")
+    ApiResponse<EvaluationTimeResponse> updatePeriodToTakeGrade(@RequestBody EvaluationTimeUpdateRequest request , @PathVariable Long evaCategoryId){
+        return ApiResponse.<EvaluationTimeResponse>builder()
+                .result(evaluationTimeService.update(request , evaCategoryId))
                 .build();
     }
 
@@ -52,4 +60,13 @@ public class EvaluationTimeController {
                 .result(evaluationTimeService.getAllEvaluationTime(semesterId))
                 .build();
     }
+
+    @DeleteMapping("/delete/{evaluationTimeId}")
+    ApiResponse<Boolean> deleteMarkingPeriod (@PathVariable Long evaluationTimeId){
+        evaluationTimeService.delete(evaluationTimeId);
+        return ApiResponse.<Boolean>builder()
+                .result(true)
+                .build();
+    }
+
 }

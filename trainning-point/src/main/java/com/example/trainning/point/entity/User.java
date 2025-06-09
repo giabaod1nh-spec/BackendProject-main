@@ -25,6 +25,11 @@ public class User extends BaseEntity{
     String code;
     @Column(name = "email", unique = true)
     String email;
+
+    String email2;
+    String address;
+    String ethnic;
+
     String password;
     String fullName;
     LocalDate dob;

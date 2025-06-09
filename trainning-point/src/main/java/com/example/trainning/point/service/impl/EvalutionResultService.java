@@ -150,4 +150,9 @@ public class EvalutionResultService implements IEvalutionResultService {
     public Long countPoorPerClass(Long semesterId , Long classId){
         return evalutionResultRepository.countByPoorPerClass(semesterId , classId);
     }
+
+    //@Override
+    //public List<EvalutionResultResponse> getResultPerClassSemester(Long classId, Long semesterId) {
+       // return  evalutionResultRepository.findResultPerClassSemester(classId, semesterId).stream().map(ev -> resultMapper.convertToAllResult(ev)).toList();
+   // }
 }

@@ -74,20 +74,20 @@ public class EvalutionPersonMapper {
           EvaluationTime configTimeMonitor = evaluationTimeRepository.getEvaluationTimeMonitor(request.getSemesterId());
           EvaluationTime configTimeCounselor = evaluationTimeRepository.getEvaluationTimeCounselor(request.getSemesterId());
 
-          if(LocalDateTime.now().isBefore(configTimeStudent.getStartTime()) || LocalDateTime.now().isAfter(configTimeStudent.getEndTime())){
-            log.error("Student marking attempted outside marking period");
-             throw new AppException(ErrorCode.INVALID_TIME_STUDENT_MARKING);
-          }
+         // if(LocalDateTime.now().isBefore(configTimeStudent.getStartTime()) || LocalDateTime.now().isAfter(configTimeStudent.getEndTime())){
+            //log.error("Student marking attempted outside marking period");
+            // throw new AppException(ErrorCode.INVALID_TIME_STUDENT_MARKING);
+         // }
 
-        if(LocalDateTime.now().isBefore(configTimeMonitor.getStartTime()) || LocalDateTime.now().isAfter(configTimeMonitor.getEndTime())){
-            log.error("Monitor marking attempted outside marking period");
-            throw new AppException(ErrorCode.INVALID_TIME_MONITOR_MARKING);
-        }
+        //if(LocalDateTime.now().isBefore(configTimeMonitor.getStartTime()) || LocalDateTime.now().isAfter(configTimeMonitor.getEndTime())){
+          //  log.error("Monitor marking attempted outside marking period");
+          //  throw new AppException(ErrorCode.INVALID_TIME_MONITOR_MARKING);
+        //}
 
-        if(LocalDateTime.now().isBefore(configTimeCounselor.getStartTime()) || LocalDateTime.now().isAfter(configTimeCounselor.getEndTime())){
-            log.error("Counselor marking attempted outside marking period");
-            throw new AppException(ErrorCode.INVALID_TIME_COUNSELOR_MARKING);
-        }
+       // if(LocalDateTime.now().isBefore(configTimeCounselor.getStartTime()) || LocalDateTime.now().isAfter(configTimeCounselor.getEndTime())){
+         //   log.error("Counselor marking attempted outside marking period");
+          //  throw new AppException(ErrorCode.INVALID_TIME_COUNSELOR_MARKING);
+       // }
 
         EvalutionPerson evalutionPerson =  EvalutionPerson.builder()
                 .studentScore(request.getStudentScore())

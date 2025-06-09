@@ -24,6 +24,17 @@ public interface IEvalutionPersonRepository extends JpaRepository<EvalutionPerso
     List<EvalutionPerson> findBySemesterIdAndUserUserId(@Param("idSemester") Long idSemester,
                                                         @Param("idUser") String idUser);
 
+
+    @Query("""
+            select ep from EvalutionPerson ep left join ep.evalutionStandard es
+            where ep.semester.id = :idSemester and ep.user.userId = :idUser and es.evalutionCategory.id = :evCategoryId
+            """)
+    List<EvalutionPerson> findBySemesterIdAndUserUserIdAndCategoryId(@Param("idSemester") Long idSemester,
+                                                                     @Param("idUser") String idUser,
+                                                                     @Param("evCategoryId") Long evCategoryId);
+
+
+
     @Query("select ev from EvalutionPerson ev where ev.user.userId = :userId")
     EvalutionPerson findByUserId(@Param("userId") String id);
 

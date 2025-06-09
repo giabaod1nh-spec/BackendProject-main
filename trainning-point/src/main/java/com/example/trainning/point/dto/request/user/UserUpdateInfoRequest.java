@@ -13,6 +13,6 @@ import java.time.LocalDate;
 @Builder
 public class UserUpdateInfoRequest {
     String phone;
-    LocalDate dob;
-    Gender gender;
+    String email2;
+    String address;
 }

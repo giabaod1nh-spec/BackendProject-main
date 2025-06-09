@@ -19,12 +19,17 @@ public class UserResponse {
     String fullName;
     LocalDate dob;
     String email;
+    String email2;
+    String address;
+    String ethnic;
     String phone;
     Boolean active;
     String gender;
     Boolean isDelete;
 
     Long classId;
+    String facultyName;
+    String codeClass;
     String className;
     String corhort;
     Set<RoleResponse> roles;

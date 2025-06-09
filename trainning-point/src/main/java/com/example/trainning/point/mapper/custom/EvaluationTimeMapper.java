@@ -43,6 +43,7 @@ public class EvaluationTimeMapper {
 
     public EvaluationTimeResponse convertToEvaluationResponse(EvaluationTime entity){
         return EvaluationTimeResponse.builder()
+                .evaluationTimeId(entity.getId())
                 .semesterName(entity.getSemester().getName())
                 .semesterId(entity.getSemester().getId())
                 .roleName(entity.getRole().getName())

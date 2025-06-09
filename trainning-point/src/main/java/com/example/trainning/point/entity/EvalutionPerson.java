@@ -31,9 +31,6 @@ public class EvalutionPerson extends BaseEntity {
     @Column(name = "teacher_score")
     Double teacherScore;
 
-//    @Column(name = "evalution_status")
-//    String evalutionStatus;
-
     @ManyToOne
     @JoinColumn(name = "id_user")
     User user;

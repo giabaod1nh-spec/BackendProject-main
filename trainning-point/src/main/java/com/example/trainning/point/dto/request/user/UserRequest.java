@@ -23,6 +23,9 @@ public class UserRequest {
     LocalDate dob;
     String phone;
     Gender gender;
+    String email2;
+    String address;
+    String ethnic;
     Long id;
 
     Set<String> roleNames;

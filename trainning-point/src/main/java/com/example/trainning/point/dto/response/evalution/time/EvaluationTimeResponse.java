@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EvaluationTimeResponse {
+    Long evaluationTimeId;
     String roleName;
     String semesterName;
     Long semesterId;

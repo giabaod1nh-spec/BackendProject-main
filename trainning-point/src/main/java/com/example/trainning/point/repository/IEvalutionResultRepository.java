@@ -1,5 +1,6 @@
 package com.example.trainning.point.repository;
 
+import com.example.trainning.point.dto.response.evalution.result.EvalutionResultResponse;
 import com.example.trainning.point.entity.EvalutionResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,6 +29,13 @@ public interface IEvalutionResultRepository extends JpaRepository<EvalutionResul
 
 
     //For Student in all class
+    @Query("""
+            select ev from EvalutionResult ev left join ev.user us
+            where us.classManager.id = :classId and ev.semester.id = :semesterId
+            """)
+List<EvalutionResult> findResultPerClassSemester(@Param("classId") Long classId ,
+                                                 @Param("semesterId") Long semesterId);
+
     @Query("""
             select count(ev) from EvalutionResult ev where ev.mark > 90 and ev.semester.id = :semesterId
             """)
@@ -106,4 +114,7 @@ public interface IEvalutionResultRepository extends JpaRepository<EvalutionResul
             """)
     Long countByPoorPerClass(@Param("classId") Long classId,
                                   @Param("semesterId") Long semesterId);
+
+
+
 }

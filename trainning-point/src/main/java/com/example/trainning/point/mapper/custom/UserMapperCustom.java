@@ -45,6 +45,9 @@ public class UserMapperCustom {
         return User.builder()
                 .code(request.getCode())
                 .email(request.getEmail())
+                .email2(request.getEmail2())
+                .ethnic(request.getEthnic())
+                .address(request.getAddress())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .fullName(request.getFullName())
                 .dob(request.getDob())
@@ -77,6 +80,8 @@ public class UserMapperCustom {
 
         String className = "";
         String corhort = "";
+        String codeClass = "";
+        String facultyName = "";
         Long classId = null;
         String gender = null;
         Double mark = null;
@@ -84,7 +89,9 @@ public class UserMapperCustom {
         if(user.getClassManager() != null){
             classId = user.getClassManager().getId();
             corhort = user.getClassManager().getAcademicCohort();
+            codeClass = user.getClassManager().getCodeClass();
             className = user.getClassManager().getName();
+            facultyName = user.getClassManager().getFaculty().getFacultyName();
         }
 
         if(user.getGender() != null)
@@ -94,6 +101,9 @@ public class UserMapperCustom {
                 .code(user.getCode())
                 .userId(user.getUserId())
                 .email(user.getEmail())
+                .email2(user.getEmail2())
+                .ethnic(user.getEthnic())
+                .address(user.getAddress())
                 .fullName(user.getFullName())
                 .dob(user.getDob())
                 .phone(user.getPhone())
@@ -103,8 +113,11 @@ public class UserMapperCustom {
                 .evaluResult(resultEvalu)
 
                 .classId(classId)
+                .codeClass(codeClass)
                 .corhort(corhort)
+                .facultyName(facultyName)
                 .className(className)
+
                 .roleNames(roleNames)
                 .build();
     }
@@ -114,6 +127,7 @@ public class UserMapperCustom {
         String className = "";
         String corhort = "";
         String codeClass = "";
+        String facultyName = " ";
         Long classId = null;
         String gender = null;
 
@@ -134,6 +148,7 @@ public class UserMapperCustom {
             corhort = user.getClassManager().getAcademicCohort();
             className = user.getClassManager().getName();
             codeClass = user.getClassManager().getCodeClass();
+            facultyName = user.getClassManager().getFaculty().getFacultyName();
         }
 
         if(user.getGender() != null)
@@ -145,6 +160,10 @@ public class UserMapperCustom {
                 .roleNames(roleNames)
                 .gender(gender)
                 .email(user.getEmail())
+                .email2(user.getEmail2())
+                .ethnic(user.getEthnic())
+                .address(user.getAddress())
+                .facultyName(facultyName)
                 .fullName(user.getFullName())
                 .code(user.getCode())
                 .corhort(corhort)
@@ -156,9 +175,9 @@ public class UserMapperCustom {
 
     public User convertToInfoResponse(UserUpdateInfoRequest request){
         return User.builder()
-                .dob(request.getDob())
+                .address(request.getAddress())
                 .phone(request.getPhone())
-                .gender(request.getGender())
+                .email2(request.getEmail2())
                 .build();
     }
 
@@ -181,6 +200,8 @@ public class UserMapperCustom {
         return UserUpdateInfoResponse.builder()
                 .code(user.getCode())
                 .email(user.getEmail())
+                .email2(user.getEmail2())
+                .address(user.getAddress())
                 .fullName(user.getFullName())
                 .dob(user.getDob())
                 .phone(user.getPhone())

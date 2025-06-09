@@ -1,8 +1,11 @@
 package com.example.trainning.point.service.impl;
 
 import com.example.trainning.point.dto.request.evalution.time.EvaluationTimeRequest;
+import com.example.trainning.point.dto.request.evalution.time.EvaluationTimeUpdateRequest;
 import com.example.trainning.point.dto.response.evalution.time.EvaluationTimeResponse;
 import com.example.trainning.point.entity.EvaluationTime;
+import com.example.trainning.point.exception.AppException;
+import com.example.trainning.point.exception.ErrorCode;
 import com.example.trainning.point.mapper.custom.EvaluationTimeMapper;
 import com.example.trainning.point.repository.IEvaluationTimeRepository;
 import com.example.trainning.point.service.interfaces.IEvaluationTimeService;
@@ -29,6 +32,14 @@ public class EvaluationTimeService implements IEvaluationTimeService {
     }
 
     @Override
+    public EvaluationTimeResponse update(EvaluationTimeUpdateRequest request , Long evaCategoryId) {
+        EvaluationTime evaluationTime = evaluationTimeRepository.findById(evaCategoryId).orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND));
+        evaluationTime.setStartTime(request.getStartTime());
+        evaluationTime.setEndTime(request.getEndTime());
+        return evaluationTimeMapper.convertToEvaluationResponse(evaluationTimeRepository.save(evaluationTime));
+    }
+
+    @Override
     public  EvaluationTimeResponse getEvaluationTimeRoleStudent(Long semesterId){
         return  evaluationTimeMapper.convertToEvaluationResponse(evaluationTimeRepository.getEvaluationTimeStudent(semesterId));
     }
@@ -46,6 +57,11 @@ public class EvaluationTimeService implements IEvaluationTimeService {
     @Override
     public List<EvaluationTimeResponse> getAllEvaluationTime (Long semesterId){
         return evaluationTimeRepository.getAllEvaluationTime(semesterId).stream().map(evaluationTimeMapper::convertToEvaluationResponse).toList();
+    }
+
+    @Override
+    public void delete(Long evaluationTimeId) {
+        evaluationTimeRepository.deleteById(evaluationTimeId);
     }
 
 }
